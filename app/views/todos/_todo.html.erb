@@ -1,5 +1,9 @@
 <div id="<%= dom_id todo %>" class="flex items-center py-3 border-b gap-x-4">
-  <input type="checkbox" <%= "checked" if todo.completed %>>
+  <%= form_with model: todo, data: { controller: "form" } do |form| %>
+    <%= form.label :completed, for: dom_id(todo, :completed) do %>
+      <%= form.check_box :completed, id: dom_id(todo, :completed), data: { action: "form#submit" } %>
+    <% end %>
+  <% end %>
   <span class="flex-1 "><%= todo.name %></span>
   <% if action_name != "show" %>
     <%= link_to "Show this todo", todo, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
