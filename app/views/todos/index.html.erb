@@ -1,14 +1,17 @@
 <div class="w-full">
   <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
+    <p class="inline-block px-3 py-2 mb-5 font-medium text-green-500 rounded-lg bg-green-50" id="notice"><%= notice %></p>
   <% end %>
-
-  <div class="flex justify-between items-center">
-    <h1 class="font-bold text-4xl">Todos</h1>
+  <div class="flex items-center justify-between">
+    <h1 class="text-4xl font-bold">Todos</h1>
     <%= link_to "New todo", new_todo_path, class: "rounded-lg py-3 px-5 bg-blue-600 text-white block font-medium" %>
   </div>
-
-  <div id="todos" class="min-w-full">
+  <div id="todos" class="min-w-full mt-1 overflow-hidden border rounded-lg" 
+    data-controller="reorder"
+    data-action="dragstart->reorder#dragstart dragover->reorder#dragover dragenter->reorder#dragenter dragleave->reorder#dragleave drop->reorder#drop dragend->reorder#dragend"
+    data-reorder-active-dropzone-class="border-dashed bg-gray-50 border-slate-400"
+    data-reorder-active-item-class="shadow"
+    data-reorder-drop-target-class="shadow-inner shadow-gray-500">
     <%= render @todos %>
   </div>
 </div>

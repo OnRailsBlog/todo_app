@@ -1,9 +1,9 @@
 class TodosController < ApplicationController
-  before_action :set_todo, only: %i[ show edit update destroy ]
+  before_action :set_todo, only: %i[show edit update destroy]
 
   # GET /todos or /todos.json
   def index
-    @todos = Todo.all
+    @todos = Todo.all.order("priority")
   end
 
   # GET /todos/1 or /todos/1.json
@@ -58,13 +58,14 @@ class TodosController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_todo
-      @todo = Todo.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def todo_params
-      params.require(:todo).permit(:name, :completed)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_todo
+    @todo = Todo.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def todo_params
+    params.require(:todo).permit(:name, :completed)
+  end
 end
