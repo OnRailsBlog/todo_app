@@ -3,6 +3,7 @@
   data-reorderable-id="<%= todo.id %>" 
   data-reorderable-path="<%= todo_priority_path(todo) %>"
   draggable="true">
+  <%= turbo_stream_from todo %>
   <div class="w-4 h-full -my-3 text-gray-900 rounded-sm hover:bg-gray-300 active:bg-gray-400 hover:cursor-grab active:cursor-grabbing" >
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-10">
       <path d="M8 2a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM8 6.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM9.5 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z" />

@@ -1,5 +1,6 @@
 class Todo < ApplicationRecord
   after_create :set_priority
+  broadcasts_refreshes
 
   private
 

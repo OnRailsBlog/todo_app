@@ -31,6 +31,7 @@ class PrioritiesController < ApplicationController
         Todo.upsert_all(todos)
       end
     end
+    @todo.touch
   end
 
   private
