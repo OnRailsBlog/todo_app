@@ -1,5 +1,5 @@
 <div id="<%= dom_id todo %>" 
-  class="flex items-center py-3 bg-white border-b gap-x-4" 
+  class="flex items-center py-3 bg-white border-b gap-x-4 todo" 
   data-reorderable-id="<%= todo.id %>" 
   data-reorderable-path="<%= todo_priority_path(todo) %>"
   draggable="true">
@@ -19,4 +19,27 @@
     <%= link_to "Show this todo", todo, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
     <%= link_to "Edit this todo", edit_todo_path(todo), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium mr-1" %>
   <% end %>
+  <div class="flex flex-col h-full mr-2 divide-y w-fit">
+    <button class="w-6 h-6 border rounded-t-full bg-gray-50 hover:bg-gray-300 up"
+      data-action="reorder#moveUp">
+      <svg xmlns="http://www.w3.org/2000/svg" 
+      fill="none" 
+      viewBox="0 0 24 24" 
+      stroke-width="1.5" 
+      stroke="currentColor" >
+        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+      </svg>
+    </button>
+    <button 
+      class="w-6 h-6 border rounded-b-full bg-gray-50 hover:bg-gray-300 down"
+      data-action="reorder#moveDown">
+      <svg xmlns="http://www.w3.org/2000/svg" 
+      fill="none" 
+      viewBox="0 0 24 24" 
+      stroke-width="1.5" 
+      stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+      </svg>
+    </button>
+  </div>
 </div>

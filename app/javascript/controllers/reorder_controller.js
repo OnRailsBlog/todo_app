@@ -12,6 +12,8 @@ export default class extends Controller {
       "application/drag-key",
       draggableItem.dataset.reorderableId
     );
+    event.dataTransfer.setData("startX", event.pageX);
+    event.dataTransfer.setData("startY", event.pageY);
     event.dataTransfer.effectAllowed = "move";
   }
 
@@ -43,7 +45,7 @@ export default class extends Controller {
     }
   }
 
-  drop(event) {
+  async drop(event) {
     this.element.classList.remove(...this.activeDropzoneClasses);
 
     const dropTarget = getDataNode(event.target);
@@ -53,50 +55,134 @@ export default class extends Controller {
     }
 
     var data = event.dataTransfer.getData("application/drag-key");
+    let startX = event.dataTransfer.getData("startX");
+    let startY = event.dataTransfer.getData("startY");
     const draggedItem = this.element.querySelector(
       `[data-reorderable-id='${data}']`
     );
 
     if (draggedItem) {
       draggedItem.classList.remove(...this.activeItemClasses);
+      let startPosition = draggedItem.getBoundingClientRect();
+      let dropTargetPosition = dropTarget.getBoundingClientRect();
+      let direction = Math.sign(startPosition.top - dropTargetPosition.top);
+      let draggedPostDragY = event.pageY - startY;
+      let draggedPostDragX = event.pageX - startX;
 
-      if (
-        dropTarget.compareDocumentPosition(draggedItem) &
-        Node.DOCUMENT_POSITION_FOLLOWING
-      ) {
-        let result = dropTarget.insertAdjacentElement(
-          "beforebegin",
-          draggedItem
-        );
-      } else if (
-        dropTarget.compareDocumentPosition(draggedItem) &
-        Node.DOCUMENT_POSITION_PRECEDING
-      ) {
-        let result = dropTarget.insertAdjacentElement("afterend", draggedItem);
-      }
-
-      let formData = new FormData();
-      formData.append(
-        "reorderable_target_id",
-        dropTarget.dataset.reorderableId
+      draggedItem.style = `transform: translate(${draggedPostDragX}px, ${draggedPostDragY}px);`;
+      draggedItem.animate(
+        [
+          {
+            transform: `translate(${
+              dropTargetPosition.x - startPosition.x
+            }px, ${dropTargetPosition.y - startPosition.y}px)`,
+          },
+        ],
+        {
+          duration: 200,
+          easing: "ease-out",
+        }
       );
-
-      fetch(draggedItem.dataset.reorderablePath, {
-        body: formData,
-        method: "PATCH",
-        credentials: "include",
-        dataType: "script",
-        headers: {
-          "X-CSRF-Token": getMetaValue("csrf-token"),
-        },
-        redirect: "manual",
-      });
+      let distance = direction * dropTargetPosition.height;
+      var animateMiddleRows = false;
+      for (const child of this.element.children) {
+        if (child == dropTarget) {
+          animateMiddleRows = !animateMiddleRows;
+          child.animate([{ transform: `translateY(${distance}px)` }], {
+            duration: 200,
+            easing: "ease-in-out",
+          });
+        } else if (child == draggedItem) {
+          animateMiddleRows = !animateMiddleRows;
+        } else {
+          if (animateMiddleRows) {
+            child.animate([{ transform: `translateY(${distance}px)` }], {
+              duration: 200,
+              easing: "ease-in-out",
+            });
+          }
+        }
+      }
+      await Promise.all(
+        draggedItem.getAnimations().map((animation) => animation.finished)
+      );
+      draggedItem.style = "";
+      this.moveItems(draggedItem, dropTarget);
     }
     event.preventDefault();
   }
 
   dragend(event) {
     this.element.classList.remove(...this.activeDropzoneClasses);
+  }
+
+  async moveUp(event) {
+    let parent = getDataNode(event.target);
+    if (
+      parent.previousSibling.dataset != null &&
+      parent.previousSibling.dataset.reorderableId != null
+    ) {
+      this.animateSwitch(parent, parent.previousSibling);
+      await Promise.all(
+        parent.getAnimations().map((animation) => animation.finished)
+      );
+      this.moveItems(parent, parent.previousSibling);
+    }
+    event.preventDefault();
+  }
+
+  async moveDown(event) {
+    let parent = getDataNode(event.target);
+    if (
+      parent.nextSibling.dataset != null &&
+      parent.nextSibling.dataset.reorderableId != null
+    ) {
+      this.animateSwitch(parent.nextSibling, parent);
+      await Promise.all(
+        parent.getAnimations().map((animation) => animation.finished)
+      );
+      this.moveItems(parent, parent.nextSibling);
+    }
+
+    event.preventDefault();
+  }
+
+  moveItems(item, target) {
+    if (
+      target.compareDocumentPosition(item) & Node.DOCUMENT_POSITION_FOLLOWING
+    ) {
+      let result = target.insertAdjacentElement("beforebegin", item);
+    } else if (
+      target.compareDocumentPosition(item) & Node.DOCUMENT_POSITION_PRECEDING
+    ) {
+      let result = target.insertAdjacentElement("afterend", item);
+    }
+
+    let formData = new FormData();
+    formData.append("reorderable_target_id", target.dataset.reorderableId);
+
+    fetch(item.dataset.reorderablePath, {
+      body: formData,
+      method: "PATCH",
+      credentials: "include",
+      dataType: "script",
+      headers: {
+        "X-CSRF-Token": getMetaValue("csrf-token"),
+      },
+      redirect: "manual",
+    });
+  }
+
+  animateSwitch(from, to) {
+    from.animate([{ transform: `translateY(-${from.clientHeight}px)` }], {
+      duration: 300,
+      easing: "ease-in-out",
+    });
+
+    to.animate([{ transform: `translateY(${to.clientHeight}px)` }], {
+      duration: 300,
+      easing: "ease-in-out",
+    });
   }
 }
 

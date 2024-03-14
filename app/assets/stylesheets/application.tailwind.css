@@ -6,8 +6,16 @@
 
 @layer components {
   .btn-primary {
-    @apply py-2 px-4 bg-blue-200;
+    @apply px-4 py-2 bg-blue-200;
   }
 }
 
 */
+
+
+div.todo:first-of-type > div > button.up {
+  visibility: hidden;
+}
+div.todo:last-of-type > div > button.down {
+  visibility: hidden;
+}
