@@ -13,9 +13,9 @@
 */
 
 
-div.todo:first-of-type > div > button.up {
+.todo:first-of-type > div > button.up {
   visibility: hidden;
 }
-div.todo:last-of-type > div > button.down {
+.todo:last-of-type > div > button.down {
   visibility: hidden;
 }

@@ -1,0 +1,5 @@
+<%= turbo_stream.append "todos" do %>
+  <%= turbo_frame_tag 'new_todo', target: "_top", class: "flex items-center py-3 pl-3 bg-white border-b pr-11 gap-x-4 todo" do %>
+    <%= render partial: 'form', locals: { todo: @todo } %>
+  <% end %>
+<% end %>

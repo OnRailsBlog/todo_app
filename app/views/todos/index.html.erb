@@ -4,7 +4,7 @@
   <% end %>
   <div class="flex items-center justify-between">
     <h1 class="text-4xl font-bold">Todos</h1>
-    <%= link_to "New todo", new_todo_path, class: "rounded-lg py-3 px-5 bg-blue-600 text-white block font-medium" %>
+    <%= link_to "New todo", new_todo_path, class: "rounded-lg py-3 px-5 bg-blue-600 text-white block font-medium", data: {turbo_stream: true} %>
   </div>
   <%= turbo_stream_from Todo.model_name.plural %>
   <div id="todos" class="min-w-full mt-1 overflow-hidden border rounded-lg" 

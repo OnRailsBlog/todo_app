@@ -54,6 +54,7 @@ class TodosController < ApplicationController
     respond_to do |format|
       format.html { redirect_to todos_url, notice: "Todo was successfully destroyed." }
       format.json { head :no_content }
+      format.turbo_stream { render turbo_stream: turbo_stream.remove(@todo) }
     end
   end
 
