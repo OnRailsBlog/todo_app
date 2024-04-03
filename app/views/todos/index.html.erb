@@ -15,9 +15,9 @@
     placeholder="Search" 
     data-controller="search" 
     data-search-url-value="<%= request.path %>"
-    data-action="search#search"
-    data-turbo-permanent
-    class="w-full my-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
+    data-action="search#search turbo:before-morph-element@document->search#animateRemovals turbo:morph-element@document->search#animateInsertions"
+  data-turbo-permanent
+  class="w-full my-1 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6">
   <div id="todos" class="min-w-full mt-1 overflow-hidden border rounded-lg" 
     data-controller="reorder"
     data-action="dragstart->reorder#dragstart dragover->reorder#dragover dragenter->reorder#dragenter dragleave->reorder#dragleave drop->reorder#drop dragend->reorder#dragend"
