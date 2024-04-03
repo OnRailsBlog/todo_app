@@ -3,7 +3,13 @@ class TodosController < ApplicationController
 
   # GET /todos or /todos.json
   def index
-    @todos = Todo.all.order("priority")
+    query = if params[:todo] && !params[:todo].nil? && !params[:todo].blank?
+      name = "%#{params[:todo].downcase.strip}%"
+      Todo.where("lower(name) like ?", name)
+    else
+      Todo.all
+    end
+    @todos = query.order("priority")
   end
 
   # GET /todos/1 or /todos/1.json
